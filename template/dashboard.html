@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FASS Dashboard</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link href="/local/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
+    <script src="/local/bootstrap/js/bootstrap.js"></script>
+
+    <link href="/local/bootstrap/custom/css/circular_progress.css" type="text/css" rel="stylesheet">
+
+</head>
+<body>
+
+
+<div class="container mt-5">
+
+    <h1 class="h3">FASS Dashboard</h1>
+
+    <div class="row">
+
+        {{#list servers}}
+
+                  <div class="col-xl-6 col-lg-6 mb-4">
+      <div class="bg-white rounded-lg p-5 shadow">
+        <h2 class="h6 font-weight-bold text-center mb-4">{{id}}</h2>
+
+        <!-- Progress bar 3 -->
+        <div class="progress mx-auto" data-value='{{percent}}'>
+          <span class="progress-left">
+                        <span class="progress-bar border-success"></span>
+          </span>
+          <span class="progress-right">
+                        <span class="progress-bar border-success"></span>
+          </span>
+          <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
+            <div class="h2 font-weight-bold">{{percent}}<sup class="small">%</sup></div>
+          </div>
+        </div>
+        <!-- END -->
+
+        <!-- Demo info -->
+        <div class="row text-center mt-4">
+          <div class="col-6 border-right">
+            <div class="h4 font-weight-bold mb-0">{{used}}</div><span class="small text-gray">Utilizado</span>
+          </div>
+          <div class="col-6">
+            <div class="h4 font-weight-bold mb-0">{{total}}</div><span class="small text-gray">Total</span>
+          </div>
+        </div>
+
+        <!-- END -->
+      </div>
+          </div>
+
+
+
+        {{/list}}
+
+    </div>
+
+</div>
+
+
+</body>
+<script src="/local/bootstrap/custom/js/circular_progress.js"></script>
+</html>

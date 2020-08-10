@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FASS</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link href="/local/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
+    <script src="/local/bootstrap/js/bootstrap.js"></script>
+
+</head>
+
+<body>
+
+<div>
+
+    <div class="jumbotron jumbotron-fluid">
+
+        <div class="container">
+
+            <h1 class="display-4">Fast Access Storage Service</h1>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="container my-5">
+
+        <h3 class="text-dark">Sobre o projeto FASS</h3>
+
+            <p class="lead">FASS é um projeto desenvolvido por Lucas Scarpinelli Tomazetto, um estudante de ciências da computação, tendo com o objetivo facilitar o compartilhamento de arquivos para o usuário final.<br><br>
+            FASS foi projetado para ser possível conectar múltiplos servidores de armazenamento(Unidades de Armazenamento) a um servidor central(Unidade de Transporte) de certa forma que o usuário final nunca
+            saiba o endereço físico de uma Unidade de Armazenamento.</p>
+
+    </div>
+
+    <div class="container my-5">
+
+         <h3 class="text-dark">Unidades (Servidores)</h3>
+
+            <div class="col-auto my-3">
+
+                <div class="media">
+                  <img src="../local/icon/server.png" class="mr-3" width="48px">
+                  <div class="media-body">
+                    <h5 class="mt-0">Unidade de Transporte</h5>
+                    A Unidade de Transporte é a responsável por receber todas as requisições de arquivos dos clientes e encaminhá-las para a Unidade de Armazenamento correspondente.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-auto my-3">
+
+                <div class="media">
+                  <img src="../local/icon/database.png" class="mr-3" width="48px">
+                  <div class="media-body">
+                    <h5 class="mt-0">Unidade de Armazenamento</h5>
+                    A Unidade de Armazenamento é a responsável por se conectar com a Unidade de Transporte e responder as suas solicitaçõs de arquivos.
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    <div class="container my-5">
+
+        <h3 class="text-dark">Estrutura de comunicação</h3>
+
+        <div class="col-auto my-3">
+                <div class="media">
+                  <img src="../local/icon/cer.png" class="mr-3" width="64px">
+                  <div class="media-body">
+                    <h5 class="mt-0">SSL/TLS 1.3</h5>
+                    A comunicação entre Cliente-Servidor(Opcional) e Servidor-Servidor(Obrigatório) é realizada através de um certificado com uma criptografia RSA 2048 bits.
+                    </div>
+                </div>
+        </div>
+
+        <div class="col-auto my-3">
+            
+            <img class="img-fluid" src="../local/img/diagram.png">
+            
+        </div>
+
+        <div class="col-auto my-3">
+                <div class="media">
+                  <img src="../local/icon/agreement.png" class="mr-3" width="64px">
+                  <div class="media-body">
+                    <h5 class="mt-0">Processo de Handshake (Servidor-Servidor)</h5>
+                        Para garantir que apenas a Unidade de Transporte terá permissão para acessar os dados da Unidade de Armazenamento, um processo de Handshake é realizado, onde ocorre a troca de Tokens.<br><br>
+                        O Token da Unidade de Transporte é único e nunca será alterado, ele deve ser colocado manualmente nas Unidades de Armazenamento. Durante o processo de Handshake, a Unidade de Armazenamento utiliza o protocol FASS para
+                        enviar o pacote de Identificação para a Unidade de Transporte, nele contém o Token único citado anteriormente, e um Token aleatório gerado pela Unidade de Armazenamento, esse Token é alterado a
+                        cada novo processo de Handshake, sendo utilizado para acessar os arquivos quando solicitado. Junto nesse mesmo pacote, também é enviado algumas informações sobre a Unidade de Armazenamento, como a porta em
+                        que a mesma está rodando e o seu ID.<br><br>Se o Token enviado for correto, a Unidade de Transporte deve responder com um pacote do tipo Welcome, contendo nele o intervalo do Heartbeat.
+                    </div>
+                </div>
+        </div>
+
+                <div class="col-auto my-3">
+                <div class="media">
+                  <img src="../local/icon/health.png" class="mr-3" width="64px">
+                  <div class="media-body">
+                    <h5 class="mt-0">Heartbeat</h5>
+                      A Internet é um lugar assustador, desconexões ocorrem a todo momento, para verificar as Unidades de Armazenamento ainda estão onlines foi implementado o sistema de Heartbeat, a Unidade de Armazenamento
+                      deve enviar para a Unidade de Transporte um pacote de Heartbeat a cada intervalo negociado no processo de Handshake. Se o mesmo não for enviado, a Unidade de Transporte vai considerá-la offline, e irá aumentar
+                      o tempo em que seus arquivos deverão ficar em cache. Caso a Unidade de Armazenamento volte, ela deve efetuar o processo de Handshake novamente.
+                  </div>
+                </div>
+        </div>
+
+        <div class="col-auto my-3">
+                <div class="media">
+                  <img src="../local/icon/https.png" class="mr-3" width="64px">
+                  <div class="media-body">
+                    <h5 class="mt-0">Solicitar arquivos</h5>
+                      Quando um arquivo é solicitado, a Unidade de Transporte entra em contato com a Unidade de Armazenamento que contém o arquivo desejado e solicita uma cópia do mesmo, durante essa comunicação, o Token trocado
+                      durante o Handshake é utilizado para solicitar o arquivo. Se o arquivo realmente existir, a Unidade de Armazenamento inicia uma stream para a Unidade de Transporte que envia a mesma para o cliente que solicitou.
+                      Ambas as comunicações são feitas utilizando o protocolo HTTP.
+                </div>
+                </div>
+        </div>
+
+                <div class="col-auto my-3">
+                <div class="media">
+                  <img src="../local/icon/save.png" class="mr-3" width="64px">
+                  <div class="media-body">
+                    <h5 class="mt-0">Cache</h5>
+                      O objetivo dessa aplicação é prover arquivos estáticos, como imagens, documentos etc. Considerando que os arquivos não vão receber uma alteração, o sistema de cache foi implementado para reduzir o
+                      consumo de banda e a quantidade de requisições a Unidade de Armazenamento. Apenas os arquivos menores que 30MB são salvos em cache, e os mesmos persistem por 60 minutos, sendo possível extender esse
+                      tempo para até 12h caso a Unidade de Armazenamento não envie um Heartbeat no intervalo negociado.
+                </div>
+                </div>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+</body>
+</html>
