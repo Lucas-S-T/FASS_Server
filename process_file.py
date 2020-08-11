@@ -60,6 +60,7 @@ def get_from_disk(req, pack, paths):
 
     realpath = paths[2:]
     paths = "/".join(realpath)
+    paths = paths.replace("%20", " ")
 
     sv = disk_servers[server]
 

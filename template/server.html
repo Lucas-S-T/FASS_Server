@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FASS</title>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link href="/local/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
+    <script src="/local/bootstrap/js/bootstrap.js"></script>
+
+</head>
+<body>
+
+
+<div class="container">
+
+    <h1 class="h3 my-4">Lista de arquivos</h1>
+
+
+    <div class="row justify-content-start">
+
+        {{#list dirs}}
+
+        <div class="col col-auto card mx-2 my-2" style="height: 100px; width: 100px">
+
+            <div class="m-auto text-center">
+                <img src="/local/icon/folder.png" width="50px">
+                <br>
+                <a class="small" href="/{{path}}">{{dname}}</a>
+            </div>
+
+        </div>
+
+        {{/list}}
+
+        {{#list files}}
+
+        <div class="col col-auto card mx-2 my-2" style="height: 100px; width: 100px">
+
+            <div class="m-auto text-center">
+                <img src="{{icon}}" width="50px" height="50px">
+                <a class="small" href="/{{path}}">{{dname}}</a>
+            </div>
+
+        </div>
+
+        {{/list}}
+
+    </div>
+
+
+
+</div>
+
+
+
+
+</body>
+</html>

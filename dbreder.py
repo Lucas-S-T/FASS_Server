@@ -34,3 +34,42 @@ def render_dashboard(req, packet):
 
     req.send(b"HTTP/1.1 200 OK\r\nServer: FASS\r\nContent-Length: " + bytes(str(len(db)), "utf-8") + b"\r\n\r\n")
     req.send(bytes(db, "utf-8"))
+
+
+def render_server_files_page(req, packet):
+
+    path = packet.path.split("/")
+    server = path[3]
+
+    filespath = "/".join(path[5:])
+    filespath = filespath.replace("%20", " ")
+
+    (files, dirs) = disk_servers[server].get_file_list(filespath)
+
+    helpers = {'list': list}
+
+    dirobj = []
+    fileobj = []
+
+    for f in dirs:
+        path = "dashboard/server/"+server+"/files/"+filespath+"/"+f
+        if filespath == "":
+            path = "dashboard/server/"+server+"/files/"+f
+        dirobj.append({"dname": f[:10], "name": f, "path": path})
+
+    for f in files:
+        path = "server/"+server+"/"+filespath+"/"+f
+        if filespath == "":
+            path = "server/"+server+"/"+f
+
+        icon = "/local/icon/document.png"
+        if f.endswith("png") or f.endswith("jpg"):
+            icon = "/"+path
+
+        fileobj.append({"dname": f[:10], "name": f, "path": path, "icon": icon})
+
+    sv = templates["server.html"]({"files": fileobj, "dirs": dirobj}, helpers=helpers)
+
+    req.send(b"HTTP/1.1 200 OK\r\nServer: FASS\r\nContent-Length: " + bytes(str(len(sv)), "utf-8") + b"\r\n\r\n")
+    req.send(bytes(sv, "utf-8"))
+

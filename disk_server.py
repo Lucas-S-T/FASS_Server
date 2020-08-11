@@ -89,3 +89,26 @@ class DiskServer:
             self.disk_used = obj["data"]["used"]
             self.disk_total = obj["data"]["total"]
 
+    def get_file_list(self, path):
+
+        context = ssl.SSLContext()
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((self.addr, self.port))
+            req = context.wrap_socket(s, server_side=False)
+
+            jr = {"op": 10, "data": {"path": path}}
+            req.send(b"FASS" + bytes(json.dumps(jr), "utf-8"))
+
+            buff = bytearray()
+
+            while True:
+                b = req.recv(4096)
+                if len(b) > 0:
+                    buff += b
+                else:
+                    break
+
+            obj = json.loads(str(buff[4:], "utf-8"))
+
+            return obj["data"]["files"], obj["data"]["dirs"]
