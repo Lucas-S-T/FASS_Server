@@ -13,7 +13,7 @@ def render_dashboard(req, packet):
         if v > 1000:
             return str(round(v / 1000, 1)) + " KB"
 
-        return str(v, "utf=8") + " B"
+        return str(v) + " B"
 
     helpers = {'list': list}
 
@@ -28,7 +28,14 @@ def render_dashboard(req, packet):
 
         percent = round(s.disk_used * 100.0 / s.disk_total, 2)
 
-        servers.append({"id": s.id, "total": hr_total, "used": hr_used, "percent": percent})
+        cache = 0
+        for c in s.cache:
+            ch = s.cache[c]
+            cache += ch.size
+
+        cache = calc_hr(cache)
+
+        servers.append({"id": s.id, "total": hr_total, "used": hr_used, "percent": percent, "cache": cache})
 
     db = templates["dashboard.html"]({"servers": servers}, helpers=helpers)
 
