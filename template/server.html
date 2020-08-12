@@ -8,6 +8,70 @@
     <link href="/local/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
     <script src="/local/bootstrap/js/bootstrap.js"></script>
 
+    <script>
+
+        var selected = []
+
+        function select(d, e){
+
+            if (selected.includes(d)) {
+                if(e.ctrlKey) {
+                    unselectItem(d)
+                    return
+                }
+                if(selected.length >1) {
+                    unselectAll()
+                    selectItem(d)
+                    return
+                }
+                unselectItem(d)
+
+            }else{
+                if(!e.ctrlKey){
+                    unselectAll()
+                }
+
+                selectItem(d)
+            }
+
+        }
+
+        function unselectAll(){
+
+          selected.forEach(value => {
+
+              unselectItem(value)
+
+          })
+
+
+        }
+
+        function selectItem(d){
+
+            dcard = document.getElementById(d+"-card")
+            dcard.classList.add("bg-primary")
+
+            dtxt = document.getElementById(d+"-text")
+            dtxt.classList.add("text-light")
+
+            selected.push(d)
+        }
+
+        function unselectItem(d){
+
+            dcard = document.getElementById(d+"-card")
+            dcard.classList.remove("bg-primary")
+
+            dtxt = document.getElementById(d+"-text")
+            dtxt.classList.remove("text-light")
+
+            selected = selected.filter(item => item !== d)
+        }
+
+
+    </script>
+
 </head>
 <body>
 
@@ -16,17 +80,37 @@
 
     <h1 class="h3 my-4">Lista de arquivos</h1>
 
+    <div class="card my-3">
+
+        <div class="row">
+
+            <div class="col-auto mx-auto my-2" >
+                <button class="btn btn-primary">Criar Pasta</button>
+            </div>
+
+            <div class="col-auto mx-auto my-2">
+                <button class="btn btn-primary">Fazer Upload</button>
+            </div>
+
+            <div class="col-auto mx-auto my-2">
+                <button class="btn btn-danger">Deletar Selecionados</button>
+            </div>
+
+
+        </div>
+
+    </div>
 
     <div class="row justify-content-start">
 
         {{#list dirs}}
 
-        <div class="col col-auto card mx-2 my-2" style="height: 100px; width: 100px">
+        <div class="col col-auto card mx-2 my-2" style="height: 100px; width: 100px; cursor: pointer" onclick="select('{{dname}}', event)" id="{{dname}}-card">
 
             <div class="m-auto text-center">
                 <img src="/local/icon/folder.png" width="50px">
                 <br>
-                <a class="small" href="/{{path}}">{{dname}}</a>
+                <a class="small" href="/{{path}}" id="{{dname}}-text">{{dname}}</a>
             </div>
 
         </div>
@@ -35,11 +119,11 @@
 
         {{#list files}}
 
-        <div class="col col-auto card mx-2 my-2" style="height: 100px; width: 100px">
+        <div class="col col-auto card mx-2 my-2" style="height: 100px; width: 100px; cursor: pointer" onclick="select('{{dname}}', event)" id="{{dname}}-card">
 
             <div class="m-auto text-center">
                 <img src="{{icon}}" width="50px" style="max-height: 50px">
-                <a class="small" href="/{{path}}">{{dname}}</a>
+                <a class="small" href="/{{path}}" id="{{dname}}-text">{{dname}}</a>
             </div>
 
         </div>
